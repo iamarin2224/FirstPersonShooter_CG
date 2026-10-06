@@ -1,0 +1,5 @@
+<RCC><qresource prefix="/sounds">
+<file alias="green.wav">sounds/green.wav</file>
+<file alias="blue.wav">sounds/blue.wav</file>
+<file alias="red.wav">sounds/red.wav</file>
+</qresource></RCC>
