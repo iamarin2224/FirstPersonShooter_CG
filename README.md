@@ -49,7 +49,15 @@ FirstPersonShooter_CG/
 └── README.md
 ```
 
-Changes for this version are on `feature/pixel-reflex`.
+Timed-round changes are on `feature/timed-rounds`, based on the merged Pixel Reflex changes.
+
+### Timed rounds and ranking
+
+Choose **2 minutes** or **5 minutes** on the start screen. **Easy** starts at level 1, **Medium** at level 4, and **Hard** at level 8. Medium is selected by default. Difficulty increases every 20 points reached, up to level 10. The sidebar shows a countdown. When time runs out, input stops and a results card shows final score, rank, personal best, and red clicks.
+
+Completed rounds are saved locally with `QSettings` under organization `CG Lab`, application `Pixel Reflex`. Leaderboards are separate for every combination of starting difficulty and duration, sorted by final score descending; tied scores share a rank. The top five scores for each duration appear on the start/results screen, and your result is ranked against all saved rounds for that difficulty and duration. Negative scores are valid. This is a local leaderboard, not an online ranking.
+
+Pause freezes the countdown. The countdown measures real active elapsed time, even if rendering stalls; the animation simulation still limits frame advancement to avoid spawn bursts. Clicking **New round** or pressing **R** abandons the current round without recording a score and returns to duration selection. Completing a round saves it exactly once. Choose either duration on the results screen to play again.
 
 ## 3. Architecture
 
@@ -75,14 +83,14 @@ Values currently live in `gamewidget.h` and `gamewidget.cpp`.
 | Initial / minimum window | 1280 × 820 / 960 × 740 |
 | Color probabilities | Green 12%, blue 64%, red 24% |
 | Points | Green +10, blue +1, red −5 |
-| Level | `min(10, peakScore / 20 + 1)` |
+| Level | `min(10, peakScore / 20 + startingLevel)` |
 | Spawn interval | `max(260, 1000 - (level - 1) * 85)` ms |
 | Reward lifetime | `max(750, 2300 - (level - 1) * 155)` ms |
 | Red lifetime | 75% of reward lifetime, minimum 600 ms |
 | Fade in / out | 90 / 140 ms |
 | Hit feedback | 650 ms |
 
-Difficulty follows the highest score reached. Losing points does not slow the game down. At level 1, a new cell appears roughly once per second; at level 10, approximately 4.26 cells appear per second. Each target keeps the lifetime assigned at spawn. The initial target appears immediately; the next is scheduled after 650 ms.
+Difficulty follows the highest score reached. Losing points does not slow the game down. Medium starts at level 4: one new cell approximately every 745 ms (1.34 cells/second), with an 1835 ms reward lifetime. At level 10, approximately 4.26 cells appear per second. Easy starts with a 1000 ms spawn interval and 2300 ms reward lifetime; Hard starts with 405 ms and 1215 ms respectively. Each target keeps the lifetime assigned at spawn. The initial target appears immediately; the next is scheduled after the selected starting interval.
 
 ## 5. Rendering Pipeline
 
@@ -148,15 +156,15 @@ If Qt 6 is on your PATH, use `qmake ../FirstPersonShooter.pro`. On Linux, run `.
 | Left-click empty cell | No effect |
 | M / Sound button | Mute or enable hit sounds |
 | Space / Pause button | Pause or resume |
-| R / Restart button | Start a fresh game |
+| R / New round button | Return to duration selection; abandon an unfinished round |
 | Resize window | Recompute board dimensions |
 
 The objective is to build points while resisting the impulse to click every new color. Rare green rewards invite quick reactions; sudden red cells reward restraint.
 
 ## 10. Future Roadmap
 
-- [ ] Persistent high scores with `QSettings`
+- [x] Separate local high scores with `QSettings` for each duration and difficulty
 - [ ] Additional accessibility and volume settings
-- [ ] Timed rounds and end-of-round statistics
+- [x] Timed rounds with final score, rank, personal best, and red click count
 - [ ] User-adjustable difficulty and grid size
 - [ ] CMake build support alongside qmake
