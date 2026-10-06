@@ -9,8 +9,8 @@
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    app.setApplicationName("FPS Training Range");
-    app.setApplicationVersion("1.0.0 — Phase 1");
+    app.setApplicationName("Pixel Reflex");
+    app.setApplicationVersion("2.0.0 — Pixel Reflex");
 
     GameWidget window;
     window.show();
