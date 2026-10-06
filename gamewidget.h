@@ -3,6 +3,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QPushButton>
+#include <QComboBox>
 #include <QProcess>
 #include <QTemporaryDir>
 #include <array>
@@ -36,6 +37,10 @@ protected:
 private:
     void tick();
     void reset();
+    void startRound(int seconds);
+    void finishRound();
+    void updateControls();
+    QString remainingTime() const;
     void togglePause();
     void toggleSound();
     void layoutBoard();
@@ -43,6 +48,13 @@ private:
     int level() const;
     int interval() const;
     QRectF cell(int col, int row) const;
+    enum class RoundState { Ready, Playing, Finished };
+    RoundState m_state = RoundState::Ready;
+    int m_duration = 120, m_rank = 0, m_baseLevel = 4;
+    QComboBox* m_difficulty;
+    qint64 m_roundElapsed = 0;
+    std::array<std::vector<int>, 6> m_leaderboards;
+    QPushButton *m_twoMinutes, *m_fiveMinutes;
     QTimer m_timer;
     QElapsedTimer m_clock;
     qint64 m_last = 0, m_now = 0, m_nextSpawn = 0;
