@@ -1,0 +1,1 @@
+CG LAB PROJECT ~ First Person Shooter (in Qt Environment with rasterized graphics)
